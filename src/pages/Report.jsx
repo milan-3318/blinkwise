@@ -81,7 +81,10 @@ export default function Report({ sessionData, onBack }) {
               <p className="text-white/60 font-medium">Session ended on {new Date(endTime).toLocaleString()}</p>
             </div>
             
-            <button className="px-8 py-4 bg-primary rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-primary-dark transition-all shadow-lg hover:shadow-primary/20 cursor-pointer">
+            <button 
+              onClick={() => window.print()}
+              className="px-8 py-4 bg-primary rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-primary-dark transition-all shadow-lg hover:shadow-primary/20 cursor-pointer print:hidden"
+            >
               <Download size={20} />
               Export Detailed PDF
             </button>
@@ -89,8 +92,8 @@ export default function Report({ sessionData, onBack }) {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 -mt-12 relative z-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div className="container mx-auto px-6 -mt-12 relative z-20 print:mt-0 print:text-navy">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 print:grid-cols-2">
           {[
             { label: 'Total Duration', value: duration, icon: <Clock className="text-primary" />, desc: 'Study time' },
             { label: 'Average Fatigue', value: `${avgAfi}%`, icon: <TrendingUp className="text-accent-yellow" />, desc: 'AFI Score' },
@@ -102,9 +105,9 @@ export default function Report({ sessionData, onBack }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white p-6 rounded-[32px] shadow-xl border border-slate-100 flex items-center gap-5"
+              className="bg-white p-6 rounded-[32px] shadow-xl border border-slate-100 flex items-center gap-5 print:shadow-none print:border print:border-slate-200"
             >
-              <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center print:hidden">
                 {stat.icon}
               </div>
               <div>
@@ -117,12 +120,12 @@ export default function Report({ sessionData, onBack }) {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 bg-white p-10 rounded-[48px] shadow-2xl border border-slate-100">
+          <div className="lg:col-span-2 bg-white p-10 rounded-[48px] shadow-2xl border border-slate-100 print:shadow-none print:border print:border-slate-200 print:col-span-3">
             <h3 className="text-xl font-bold text-navy mb-8 flex items-center gap-3">
-              <Brain size={24} className="text-primary" />
+              <Brain size={24} className="text-primary print:hidden" />
               Cognitive Load Over Time
             </h3>
-            <div className="h-[400px]">
+            <div className="h-[400px] print:h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={history}>
                   <defs>
@@ -142,14 +145,14 @@ export default function Report({ sessionData, onBack }) {
             </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="bg-white p-8 rounded-[40px] shadow-2xl border border-slate-100">
+          <div className="space-y-6 print:col-span-3 print:grid print:grid-cols-2 print:gap-6 print:space-y-0">
+            <div className="bg-white p-8 rounded-[40px] shadow-2xl border border-slate-100 print:shadow-none print:border print:border-slate-200">
               <h3 className="text-xl font-bold text-navy mb-8">AI Diagnostics</h3>
               <div className="space-y-6">
                 {insights.map((insight, i) => (
                   <div key={i} className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
                     <div className="font-bold text-navy mb-2 flex items-center gap-2 text-sm uppercase tracking-wider">
-                      {insight.icon}
+                      <span className="print:hidden">{insight.icon}</span>
                       {insight.title}
                     </div>
                     <p className="text-sm text-slate-500 leading-relaxed">
@@ -160,25 +163,31 @@ export default function Report({ sessionData, onBack }) {
               </div>
             </div>
 
-            <div className="p-8 bg-navy text-white rounded-[40px] relative overflow-hidden shadow-2xl">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl" />
+            <div className="p-8 bg-navy text-white rounded-[40px] relative overflow-hidden shadow-2xl print:bg-slate-50 print:text-navy print:shadow-none print:border print:border-slate-200">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl print:hidden" />
               <div className="relative z-10">
-                <div className="font-black text-xs uppercase tracking-[0.2em] mb-4 text-primary-light">Personalized Recovery Plan</div>
+                <div className="font-black text-xs uppercase tracking-[0.2em] mb-4 text-primary-light print:text-primary">Personalized Recovery Plan</div>
                 <div className="space-y-3 mb-8">
                   {recoveryPlan.map((step, i) => (
-                    <div key={i} className="flex gap-3 text-sm text-white/80 leading-snug">
-                      <div className="w-5 h-5 bg-white/10 rounded-full flex items-center justify-center text-[10px] text-primary-light shrink-0">{i+1}</div>
+                    <div key={i} className="flex gap-3 text-sm text-white/80 leading-snug print:text-slate-600">
+                      <div className="w-5 h-5 bg-white/10 rounded-full flex items-center justify-center text-[10px] text-primary-light shrink-0 print:bg-primary/10 print:text-primary">{i+1}</div>
                       {step}
                     </div>
                   ))}
                 </div>
-                <button className="w-full py-4 bg-primary rounded-2xl font-bold text-sm hover:bg-primary-dark transition-all shadow-lg hover:shadow-primary/40 cursor-pointer">
+                <button className="w-full py-4 bg-primary rounded-2xl font-bold text-sm hover:bg-primary-dark transition-all shadow-lg hover:shadow-primary/40 cursor-pointer print:hidden">
                   View Full Schedule
                 </button>
               </div>
             </div>
           </div>
         </div>
+      </div>
+      
+      {/* Footer Branding for Print */}
+      <div className="hidden print:block fixed bottom-0 left-0 right-0 p-8 border-t border-slate-200 text-center">
+        <p className="text-sm font-bold text-navy">Generated by MindGuard AI</p>
+        <p className="text-xs text-slate-400">Personalized Behavioral Health Optimization</p>
       </div>
     </div>
   );

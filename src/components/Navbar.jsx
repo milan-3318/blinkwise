@@ -1,7 +1,7 @@
 import React from 'react';
 import { Brain, User } from 'lucide-react';
 
-export default function Navbar({ userData, onSignInClick }) {
+export default function Navbar({ userData, onSignInClick, onLogout }) {
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
@@ -20,11 +20,19 @@ export default function Navbar({ userData, onSignInClick }) {
 
         <div className="flex items-center gap-4">
           {userData ? (
-            <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-full border border-slate-200">
-              <span className="text-xs font-bold text-navy">{userData.name}</span>
-              <div className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center">
-                <User size={14} />
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-full border border-slate-200">
+                <span className="text-xs font-bold text-navy">{userData.name}</span>
+                <div className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center">
+                  <User size={14} />
+                </div>
               </div>
+              <button 
+                onClick={onLogout}
+                className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors cursor-pointer"
+              >
+                Log Out
+              </button>
             </div>
           ) : (
             <>
